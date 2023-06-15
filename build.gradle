@@ -12,6 +12,8 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
 }
 
 test {
