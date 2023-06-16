@@ -10,7 +10,7 @@ public interface ServiceBD extends Remote {
 
     public JSONObject getRestaurants() throws RemoteException;
 
-    public void reserver(int idRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException;
+    public boolean reserver(int idRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException;
 
     public void ajoutRestaurant(String name, int nbPlace, String address, double latitude, double longitude) throws RemoteException;
 

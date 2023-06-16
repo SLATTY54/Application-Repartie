@@ -33,9 +33,11 @@ public class Bd implements ServiceBD {
 
                 list.add(jsonObject);
             }
-            JSONObject finalJSON = new JSONObject();
 
+            JSONObject finalJSON = new JSONObject();
             finalJSON.put("restaurants", list);
+
+            System.out.println("BDD > Récupération de la liste des restaurants");
 
             return finalJSON;
 
@@ -46,22 +48,33 @@ public class Bd implements ServiceBD {
     }
 
     @Override
-    public void reserver(int idRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException {
+    public boolean reserver(int idRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException {
         try {
             Connection connection = DBConnection.createSession();
 
 
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from Reservations where restaurant_id = ? and reservationTime = ?");
-            preparedStatement.setInt(1, idRestaurant);
-            preparedStatement.setDate(2, dateResa);
+            PreparedStatement testReservation = connection.prepareStatement("SELECT * FROM Reservations WHERE restaurant_id = ? AND reservationTime = ?");
+            testReservation.setInt(1, idRestaurant);
+            testReservation.setDate(2, dateResa);
 
-            if (preparedStatement.execute()) {
-                throw new RuntimeException("La réservation existe déjà");
+            ResultSet resultSet = testReservation.executeQuery();
+
+            if (resultSet.next()) {
+
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `Reservations`(`restaurant_id`, `name`, `surname`, `guests`, `phoneNumber`, `reservationTime`) VALUES (?,?,?,?,?,?)");
+                preparedStatement.setInt(1, idRestaurant);
+                preparedStatement.setString(2, nom);
+                preparedStatement.setString(3, prenom);
+                preparedStatement.setInt(4, guests);
+                preparedStatement.setString(5, phoneNumber);
+                preparedStatement.setDate(6, dateResa);
+
+                preparedStatement.executeUpdate();
+                return true;
+
             } else {
-                String requete = "INSERT INTO reservation (nom, prenom, guests, phoneNumber) VALUES ('" + nom + "', '" + prenom + "', " + guests + ", '" + phoneNumber + "');";
-
-                PreparedStatement preparedStatement1 = connection.prepareStatement(requete);
-                preparedStatement1.executeUpdate();
+                System.out.println("BDD > Echec d'une réservation car un client a déjà reservé à ce restaurant pour la date donnée");
+                return false;
             }
 
         } catch (SQLException e) {
@@ -74,13 +87,15 @@ public class Bd implements ServiceBD {
         try {
             Connection connection = DBConnection.createSession();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants VALUES (?,?,?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants(`name`, `nbPlace`, `address`, `latitude`, `longitude`) VALUES (?,?,?,?,?)");
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, nbPlace);
             preparedStatement.setString(3, address);
             preparedStatement.setDouble(4, latitude);
             preparedStatement.setDouble(5, longitude);
             preparedStatement.executeUpdate();
+
+            System.out.println("BDD > Ajout d'un nouveau restaurant");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
