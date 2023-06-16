@@ -27,6 +27,7 @@ public class Bd implements ServiceBD{
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", resultSet.getInt("id"));
                 jsonObject.put("name", resultSet.getString("name"));
+                jsonObject.put("nbPlace", resultSet.getString("nbPlace"));
                 jsonObject.put("address", resultSet.getString("address"));
                 jsonObject.put("latitude", resultSet.getDouble("latitude"));
                 jsonObject.put("longitude", resultSet.getDouble("longitude"));
