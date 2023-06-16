@@ -10,7 +10,7 @@ public class LancerServeur {
     public static void main(String[] args) {
 
         try {
-            DBConnection.initializeDatabase("perrot54u", "Alex54123*");
+            DBConnection.initializeDatabase("kizyow", "kizyow");
             Bd bd = new Bd();
 
             ServiceBD rd = (ServiceBD) UnicastRemoteObject.exportObject(bd, 0);
@@ -22,7 +22,7 @@ public class LancerServeur {
             System.out.println("Serveur lancé");
 
         } catch (RemoteException e) {
-            System.out.println("Création de la référence distante échouer");
+            System.out.println("Création de la référence distante échoué");
         }
 
     }

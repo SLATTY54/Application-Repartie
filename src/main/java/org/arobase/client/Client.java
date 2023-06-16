@@ -1,10 +1,7 @@
 package org.arobase.client;
 
-import com.sun.net.httpserver.HttpServer;
 import org.arobase.serveur.ServiceBD;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -15,7 +12,7 @@ public class Client {
 
     public static void main(String[] args) {
 
-        if(args.length < 2){
+        if (args.length < 2) {
             System.err.println("Usage: java Client <host> <port>");
             System.exit(1);
         }
@@ -33,13 +30,11 @@ public class Client {
         }
 
         try {
+
             ServiceBD serviceBD = (ServiceBD) registry.lookup("baseDeDonnee");
 
-            HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
-            server.createContext("/donnees", new DonneeHandler(serviceBD));
-            server.createContext("/reserver", new ReserverHandler(serviceBD));
-            server.setExecutor(null);
-            server.start();
+            Proxy proxy = new Proxy(serviceBD);
+            proxy.createHttpServer(80);
 
         } catch (AccessException e) {
             throw new RuntimeException("Erreur d'accès à l'annuaire");
@@ -47,8 +42,6 @@ public class Client {
             throw new RuntimeException("Erreur de connexion à l'annuaire");
         } catch (NotBoundException e) {
             throw new RuntimeException("Le service n'est pas connu dans l'annuaire");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
 
