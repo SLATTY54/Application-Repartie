@@ -20,16 +20,41 @@ public class ReservationHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange t) throws IOException {
-        InputStream is = t.getRequestBody();
+    public void handle(HttpExchange t) {
 
-        JSONObject jsonObject = inputStreamToJSON(is);
 
-        String response = jsonObject.toJSONString();
-        t.sendResponseHeaders(200, response.length());
-        OutputStream os = t.getResponseBody();
-        os.write(response.getBytes());
-        os.close();
+        /**
+         * FORMAT POUR LES DONNÉES
+         * {
+         *     "restaurant_id": 1,
+         *     "name": "PERROT",
+         *     "surname": "Alexandre",
+         *     "guests": 3,
+         *     "phoneNumber": "0625005194",
+         *     "reservationTime": "2023-06-17",
+         * }
+         */
+
+        try {
+
+            InputStream is = t.getRequestBody();
+
+            JSONObject jsonObject = inputStreamToJSON(is);
+            ReservationData reservationData = ReservationData.fromJSON(jsonObject);
+            System.out.println(reservationData);
+
+            boolean value = serviceBD.reserver(reservationData);
+
+            String response = String.valueOf(value);
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public JSONObject inputStreamToJSON(InputStream is) throws IOException {

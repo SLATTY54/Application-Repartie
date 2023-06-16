@@ -1,5 +1,6 @@
 package org.arobase.serveur;
 
+import org.arobase.client.ReservationData;
 import org.json.simple.JSONObject;
 
 import java.rmi.RemoteException;
@@ -48,28 +49,30 @@ public class Bd implements ServiceBD {
     }
 
     @Override
-    public boolean reserver(int idRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException {
+    public boolean reserver(ReservationData reservationData) throws RemoteException {
         try {
             Connection connection = DBConnection.createSession();
 
 
             PreparedStatement testReservation = connection.prepareStatement("SELECT * FROM Reservations WHERE restaurant_id = ? AND reservationTime = ?");
-            testReservation.setInt(1, idRestaurant);
-            testReservation.setDate(2, dateResa);
+            testReservation.setInt(1, reservationData.getRestaurantId());
+            testReservation.setDate(2, Date.valueOf(reservationData.getReservationTime()));
 
             ResultSet resultSet = testReservation.executeQuery();
 
-            if (resultSet.next()) {
+            if (!resultSet.next()) {
 
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `Reservations`(`restaurant_id`, `name`, `surname`, `guests`, `phoneNumber`, `reservationTime`) VALUES (?,?,?,?,?,?)");
-                preparedStatement.setInt(1, idRestaurant);
-                preparedStatement.setString(2, nom);
-                preparedStatement.setString(3, prenom);
-                preparedStatement.setInt(4, guests);
-                preparedStatement.setString(5, phoneNumber);
-                preparedStatement.setDate(6, dateResa);
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Reservations(`restaurant_id`, `name`, `surname`, `guests`, `phoneNumber`, `reservationTime`) VALUES (?,?,?,?,?,?)");
+                preparedStatement.setInt(1, reservationData.getRestaurantId());
+                preparedStatement.setString(2, reservationData.getName());
+                preparedStatement.setString(3, reservationData.getSurname());
+                preparedStatement.setInt(4, reservationData.getGuests());
+                preparedStatement.setString(5, reservationData.getPhoneNumber());
+                preparedStatement.setDate(6, Date.valueOf(reservationData.getReservationTime()));
 
                 preparedStatement.executeUpdate();
+
+                System.out.println("BDD > Réservation effectuée pour " + reservationData.getName());
                 return true;
 
             } else {

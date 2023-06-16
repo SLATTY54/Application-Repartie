@@ -35,6 +35,7 @@ public class Client {
 
             Proxy proxy = new Proxy(serviceBD);
             proxy.createHttpServer(80);
+            System.out.println("Proxy lancé");
 
         } catch (AccessException e) {
             throw new RuntimeException("Erreur d'accès à l'annuaire");
