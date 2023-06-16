@@ -37,6 +37,15 @@ public class ReservationHandler implements HttpHandler {
 
         try {
 
+            if(!t.getRequestMethod().equals("POST")){
+                String response = "<h1>You must use this URL with a POST method!</h1>";
+                t.sendResponseHeaders(200, response.length());
+                OutputStream os = t.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+                return;
+            }
+
             InputStream is = t.getRequestBody();
 
             JSONObject jsonObject = inputStreamToJSON(is);
