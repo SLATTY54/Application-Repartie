@@ -13,5 +13,6 @@ public interface ServiceBD extends Remote {
 
     public void reserver(int IdRestaurant, Date dateResa, String nom, String prenom, int guests, String phoneNumber) throws RemoteException;
 
+    public void ajoutRestaurant(String name, String address, double latitude, double longitude) throws RemoteException;
 
 }

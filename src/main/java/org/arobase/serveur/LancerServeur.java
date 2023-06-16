@@ -9,11 +9,11 @@ import java.rmi.server.UnicastRemoteObject;
 public class LancerServeur {
     public static void main(String[] args) {
 
-        try{
-            DBConnection.initializeDatabase("", "perrot54u");
+        try {
+            DBConnection.initializeDatabase("perrot54u", "Alex54123*");
             Bd bd = new Bd();
 
-            ServiceBD rd = (ServiceBd) UnicastRemoteObject.exportObject(bd, 0);
+            ServiceBD rd = (ServiceBD) UnicastRemoteObject.exportObject(bd, 0);
 
             Registry registry = LocateRegistry.createRegistry(1099);
 
@@ -21,10 +21,8 @@ public class LancerServeur {
 
             System.out.println("Serveur lancé");
 
-        }catch (RemoteException e){
+        } catch (RemoteException e) {
             System.out.println("Création de la référence distante échouer");
-        }catch (ServerNotActiveException ex) {
-            System.out.println("Serveur non active");
         }
 
     }

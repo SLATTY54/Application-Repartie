@@ -4,9 +4,10 @@ import org.json.simple.JSONObject;
 
 import java.rmi.RemoteException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Bd implements ServiceBD{
+public class Bd implements ServiceBD {
 
 
     @Override
@@ -20,14 +21,12 @@ public class Bd implements ServiceBD{
             ResultSet resultSet = preparedStatement.executeQuery();
 
 
+            List<JSONObject> list = new ArrayList<>();
 
-            List<JSONObject> list = null;
-
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", resultSet.getInt("id"));
                 jsonObject.put("name", resultSet.getString("name"));
-                jsonObject.put("nbPlace", resultSet.getString("nbPlace"));
                 jsonObject.put("address", resultSet.getString("address"));
                 jsonObject.put("latitude", resultSet.getDouble("latitude"));
                 jsonObject.put("longitude", resultSet.getDouble("longitude"));
@@ -40,8 +39,8 @@ public class Bd implements ServiceBD{
 
             return finalJSON;
 
-        }catch (SQLException e){
-            throw  new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -58,8 +57,8 @@ public class Bd implements ServiceBD{
 
             if (preparedStatement.execute()) {
                 throw new RuntimeException("La réservation existe déjà");
-            }else {
-                String requete = "INSERT INTO reservation (nom, prenom, guests, phoneNumber) VALUES ('"+nom+"', '"+prenom+"', "+guests+", '"+phoneNumber+"');";
+            } else {
+                String requete = "INSERT INTO reservation (nom, prenom, guests, phoneNumber) VALUES ('" + nom + "', '" + prenom + "', " + guests + ", '" + phoneNumber + "');";
 
                 PreparedStatement preparedStatement1 = connection.prepareStatement(requete);
                 preparedStatement1.execute();
@@ -70,6 +69,16 @@ public class Bd implements ServiceBD{
         }
     }
 
+    public void ajoutRestaurant(String name, String address, double latitude, double longitude) throws RemoteException{
+        try {
+            Connection connection = DBConnection.createSession();
+
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants VALUES (?,?,?,?)");
+
+        }catch (SQLException e){
+            throw  new RuntimeException(e);
+        }
+    }
 
 
 }

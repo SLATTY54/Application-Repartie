@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static String serverName = "charlemagne.iutnc.univ-lorraine.fr";
+    private static String serverName = "webetu.iutnc.univ-lorraine.fr";
     private static String portNumber = "3306";
     private static String dbName = "perrot54u";
     private static String username;
