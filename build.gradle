@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
@@ -14,6 +15,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'com.mysql:mysql-connector-j:8.0.33'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.arobase.Main'
+    }
 }
 
 test {

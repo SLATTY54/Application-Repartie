@@ -1,5 +1,6 @@
 package org.arobase.client;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import netscape.javascript.JSObject;
@@ -37,7 +38,14 @@ public class ReservationHandler implements HttpHandler {
 
         try {
 
+            Headers headers = t.getResponseHeaders();
+            headers.add("Access-Control-Allow-Origin", "http://localhost");
+            headers.add("Access-Control-Allow-Methods", "GET, POST");
+            headers.add("Access-Control-Allow-Headers", "Content-Type");
+            headers.add("Content-Type", "application/json");
+
             if(!t.getRequestMethod().equals("POST")){
+
                 String response = "<h1>You must use this URL with a POST method!</h1>";
                 t.sendResponseHeaders(200, response.length());
                 OutputStream os = t.getResponseBody();

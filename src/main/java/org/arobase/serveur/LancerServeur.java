@@ -1,13 +1,17 @@
 package org.arobase.serveur;
 
+import org.arobase.Service;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class LancerServeur {
-    public static void main(String[] args) {
+public class LancerServeur implements Service {
+
+    @Override
+    public void demarrer(String[] args) {
 
         try {
             DBConnection.initializeDatabase("kizyow", "kizyow");
