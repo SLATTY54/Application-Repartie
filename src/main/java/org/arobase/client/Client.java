@@ -2,6 +2,7 @@ package org.arobase.client;
 
 import org.arobase.Service;
 import org.arobase.serveur.ServiceBD;
+import org.arobase.serveur.ServiceEnseignementSup;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -34,8 +35,9 @@ public class Client implements Service {
         try {
 
             ServiceBD serviceBD = (ServiceBD) registry.lookup("baseDeDonnee");
+            ServiceEnseignementSup ensSup = (ServiceEnseignementSup) registry.lookup("enseignementSup");
 
-            Proxy proxy = new Proxy(serviceBD);
+            Proxy proxy = new Proxy(serviceBD, ensSup);
             proxy.createHttpServer(80);
             System.out.println("Proxy lancé");
 
