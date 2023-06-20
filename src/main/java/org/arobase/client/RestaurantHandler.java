@@ -20,9 +20,9 @@ public class RestaurantHandler implements HttpHandler {
     public void handle(HttpExchange t) throws IOException {
         // Set CORS headers
         Headers headers = t.getResponseHeaders();
-        headers.add("Access-Control-Allow-Origin", "http://localhost");
-        headers.add("Access-Control-Allow-Methods", "GET");
-        headers.add("Access-Control-Allow-Headers", "Content-Type");
+        headers.add("Access-Control-Allow-Origin", "*");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         headers.add("Content-Type", "application/json");
 
         String response = serviceBD.getRestaurants().toJSONString();

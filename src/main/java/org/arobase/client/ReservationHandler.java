@@ -39,9 +39,9 @@ public class ReservationHandler implements HttpHandler {
         try {
 
             Headers headers = t.getResponseHeaders();
-            headers.add("Access-Control-Allow-Origin", "http://localhost");
-            headers.add("Access-Control-Allow-Methods", "GET, POST");
-            headers.add("Access-Control-Allow-Headers", "Content-Type");
+            headers.add("Access-Control-Allow-Origin", "*");
+            headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
             headers.add("Content-Type", "application/json");
 
             if(!t.getRequestMethod().equals("POST")){
