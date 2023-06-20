@@ -1,6 +1,7 @@
 package org.arobase.serveur;
 
 import org.arobase.client.ReservationData;
+import org.arobase.client.RestoData;
 import org.json.simple.JSONObject;
 
 import java.rmi.RemoteException;
@@ -86,19 +87,20 @@ public class Bd implements ServiceBD {
     }
 
     @Override
-    public void ajoutRestaurant(String name, int nbPlace, String address, double latitude, double longitude) throws RemoteException {
+    public boolean ajoutRestaurant(RestoData restoData) throws RemoteException {
         try {
             Connection connection = DBConnection.createSession();
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants(`name`, `nbPlace`, `address`, `latitude`, `longitude`) VALUES (?,?,?,?,?)");
-            preparedStatement.setString(1, name);
-            preparedStatement.setInt(2, nbPlace);
-            preparedStatement.setString(3, address);
-            preparedStatement.setDouble(4, latitude);
-            preparedStatement.setDouble(5, longitude);
+            preparedStatement.setString(1, restoData.getName());
+            preparedStatement.setInt(2, restoData.getNbPlace());
+            preparedStatement.setString(3, restoData.getAddress());
+            preparedStatement.setDouble(4, restoData.getLatitude());
+            preparedStatement.setDouble(5, restoData.getLongitude());
             preparedStatement.executeUpdate();
 
             System.out.println("BDD > Ajout d'un nouveau restaurant");
+            return true;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

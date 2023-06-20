@@ -24,6 +24,7 @@ public class Proxy {
             server.createContext("/restaurants", new RestaurantHandler(serviceBD));
             server.createContext("/reservation", new ReservationHandler(serviceBD));
             server.createContext("/enseignements", new EnsSupHandler(ensSup));
+            server.createContext("/ajouterResto", new AjouterRestoHandler(serviceBD));
             server.setExecutor(null);
             server.start();
         } catch (IOException e) {

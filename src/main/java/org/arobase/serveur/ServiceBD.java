@@ -1,6 +1,7 @@
 package org.arobase.serveur;
 
 import org.arobase.client.ReservationData;
+import org.arobase.client.RestoData;
 import org.json.simple.JSONObject;
 
 import java.rmi.Remote;
@@ -12,6 +13,6 @@ public interface ServiceBD extends Remote {
 
     public boolean reserver(ReservationData reservationData) throws RemoteException;
 
-    public void ajoutRestaurant(String name, int nbPlace, String address, double latitude, double longitude) throws RemoteException;
+    public boolean ajoutRestaurant(RestoData restoData) throws RemoteException;
 
 }
