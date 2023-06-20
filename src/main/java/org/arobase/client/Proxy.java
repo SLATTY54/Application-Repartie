@@ -71,6 +71,7 @@ public class Proxy {
             server.createContext("/ajouterResto", new AjouterRestoHandler(serviceBD));
             server.setExecutor(null);
             server.start();
+
         } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException |
                  KeyManagementException | UnrecoverableKeyException e) {
             throw new RuntimeException(e);

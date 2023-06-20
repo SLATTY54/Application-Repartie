@@ -1,8 +1,10 @@
 package org.arobase.bd;
 
 import org.arobase.Service;
+import org.arobase.serveur.ServiceServeur;
 
 import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -32,17 +34,24 @@ public class LancerBd implements Service {
 
         try {
 
+            ServiceServeur serviceServeur = (ServiceServeur) registry.lookup("serveur");
+
             DBConnection.initializeDatabase("perrot54u", "Alex54123*");
             Bd bd = new Bd();
 
             ServiceBD rd = (ServiceBD) UnicastRemoteObject.exportObject(bd, 0);
 
-            registry.rebind("baseDeDonnee", rd);
+            serviceServeur.enregistrerBD(rd);
+
+            System.out.println("Enregistrement du service BDD au serveur");
+
 
         } catch (AccessException e) {
             throw new RuntimeException("Erreur d'accès à l'annuaire");
         } catch (RemoteException e) {
             throw new RuntimeException("Erreur de connexion à l'annuaire");
+        } catch (NotBoundException e) {
+            throw new RuntimeException(e);
         }
 
     }

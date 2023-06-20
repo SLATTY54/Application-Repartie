@@ -15,7 +15,7 @@ public class EnseignementSup implements ServiceEnseignementSup {
     public String getEnseignementsSup() throws RemoteException {
         try {
 
-            System.out.println("Tentative de fetch DATA");
+            System.out.println("Service ENS-SUP > Recuperation des donnees de data-gouv.fr");
 
             HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).followRedirects(HttpClient.Redirect.NORMAL)
                     .proxy(ProxySelector.of(new InetSocketAddress("www-cache.iutnc.univ-lorraine.fr", 3128))).build();
@@ -32,7 +32,7 @@ public class EnseignementSup implements ServiceEnseignementSup {
                 System.out.println("Request failed with status code: " + statusCode);
             }
 
-            System.out.println("ENS-SUP > Récuperation des donnees d'ens superieur");
+            System.out.println("Service ENS-SUP > Donnees recuperes avec succes, envoi du resultat vers le client");
 
             return response.body();
 

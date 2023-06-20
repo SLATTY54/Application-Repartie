@@ -13,7 +13,7 @@ public class Main {
         Service serviceChoisi = null;
 
         if (args.length < 1) {
-            System.err.println("Veuillez choisir un service ('client', 'serveur'");
+            System.err.println("Veuillez choisir un service ('client', 'serveur', 'service-bd', 'service-enssup')");
             System.exit(1);
         }
 

@@ -36,22 +36,27 @@ public class ReservationHandler implements HttpHandler {
              * }
              */
 
+            System.out.println("Proxy > Requete pour /reservation recue");
+
             try {
 
                 Headers headers = t.getResponseHeaders();
                 headers.add("Access-Control-Allow-Origin", "*");
                 headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
                 headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                headers.add("Content-Type", "application/json");
 
                 if (!t.getRequestMethod().equals("POST")) {
+                    headers.add("Content-Type", "text/html");
 
                     String response = "<h1>You must use this URL with a POST method!</h1>";
                     t.sendResponseHeaders(200, response.length());
                     OutputStream os = t.getResponseBody();
                     os.write(response.getBytes());
                     os.close();
+                    System.out.println("Proxy > Echec pour /reservation, requete faite en GET et non POST");
                     return;
+                } else {
+                    headers.add("Content-Type", "application/json");
                 }
 
                 InputStream is = t.getRequestBody();
@@ -71,6 +76,7 @@ public class ReservationHandler implements HttpHandler {
                 OutputStream os = t.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
+                System.out.println("Proxy > Requete pour /reservation terminee");
 
             } catch (
                     IOException e) {

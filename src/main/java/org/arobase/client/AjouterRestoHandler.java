@@ -27,14 +27,15 @@ public class AjouterRestoHandler implements HttpHandler {
             /**
              * FORMAT POUR LES DONNÉES
              * {
-             *     "restaurant_id": 1,
-             *     "name": "PERROT",
-             *     "surname": "Alexandre",
-             *     "guests": 3,
-             *     "phoneNumber": "0625005194",
-             *     "reservationTime": "2023-06-17",
+             *     "name": "Resto",
+             *     "address": "1 rue test",
+             *     "nbPlace": 3,
+             *     "latitude": "1.000000",
+             *     "longitude": "1.000000",
              * }
              */
+
+            System.out.println("Proxy > Requete pour /ajouterResto recue");
 
             try {
 
@@ -42,16 +43,18 @@ public class AjouterRestoHandler implements HttpHandler {
                 headers.add("Access-Control-Allow-Origin", "*");
                 headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
                 headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                headers.add("Content-Type", "application/json");
 
                 if (!t.getRequestMethod().equals("POST")) {
-
+                    headers.add("Content-Type", "text/html");
                     String response = "<h1>You must use this URL with a POST method!</h1>";
                     t.sendResponseHeaders(200, response.length());
                     OutputStream os = t.getResponseBody();
                     os.write(response.getBytes());
                     os.close();
+                    System.out.println("Proxy > Echec pour /ajouterResto, requete faite en GET et non POST");
                     return;
+                } else {
+                    headers.add("Content-Type", "application/json");
                 }
 
                 InputStream is = t.getRequestBody();
@@ -69,6 +72,7 @@ public class AjouterRestoHandler implements HttpHandler {
                 OutputStream os = t.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
+                System.out.println("Proxy > Requete pour /ajouterResto recue");
 
             } catch (IOException e) {
                 e.printStackTrace();

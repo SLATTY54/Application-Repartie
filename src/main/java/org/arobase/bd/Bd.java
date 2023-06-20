@@ -13,7 +13,7 @@ public class Bd implements ServiceBD {
 
     @Override
     public JSONObject getRestaurants() throws RemoteException {
-        System.out.println("TEST BD 1");
+        System.out.println("BDD > Tentative de recuperation de la liste des restaurants");
         try {
             Connection connection = DBConnection.createSession();
 
@@ -21,8 +21,6 @@ public class Bd implements ServiceBD {
             PreparedStatement preparedStatement = connection.prepareStatement(requete);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-
-            System.out.println("TEST BD 2");
 
             List<JSONObject> list = new ArrayList<>();
 
@@ -41,7 +39,7 @@ public class Bd implements ServiceBD {
             JSONObject finalJSON = new JSONObject();
             finalJSON.put("restaurants", list);
 
-            System.out.println("BDD > Récupération de la liste des restaurants");
+            System.out.println("BDD > Recuperation des restos effectuees, envoi vers le client");
 
             return finalJSON;
 
@@ -53,6 +51,9 @@ public class Bd implements ServiceBD {
 
     @Override
     public boolean reserver(ReservationData reservationData) throws RemoteException {
+
+        System.out.println("BDD > Tentative de reservation pour " + reservationData.getName());
+
         try {
             Connection connection = DBConnection.createSession();
 
@@ -75,11 +76,11 @@ public class Bd implements ServiceBD {
 
                 preparedStatement.executeUpdate();
 
-                System.out.println("BDD > Réservation effectuée pour " + reservationData.getName());
+                System.out.println("BDD > Reservation effectuee pour " + reservationData.getName());
                 return true;
 
             } else {
-                System.out.println("BDD > Echec d'une réservation car un client a déjà reservé à ce restaurant pour la date donnée");
+                System.out.println("BDD > Echec d'une reservation car un client a deja reserve à ce restaurant pour la date donnee");
                 return false;
             }
 
@@ -90,6 +91,9 @@ public class Bd implements ServiceBD {
 
     @Override
     public int ajoutRestaurant(RestoData restoData) throws RemoteException {
+
+        System.out.println("BDD > Demande d'ajout d'un nouveau restaurant");
+
         try {
             Connection connection = DBConnection.createSession();
 
@@ -105,10 +109,9 @@ public class Bd implements ServiceBD {
             int generatedId = -1;
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getInt(1);
-                System.out.println("Generated ID: " + generatedId);
             }
 
-            System.out.println("BDD > Ajout d'un nouveau restaurant");
+            System.out.println("BDD > Restaurant ajoutee avec succes");
             return generatedId;
 
         } catch (SQLException e) {

@@ -21,6 +21,8 @@ public class RestaurantHandler implements HttpHandler {
 
         new Thread(() -> {
 
+            System.out.println("Proxy > Requete pour /restaurants recue");
+
             try {
 
                 // Set CORS headers
@@ -30,13 +32,13 @@ public class RestaurantHandler implements HttpHandler {
                 headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 headers.add("Content-Type", "application/json");
 
-                System.out.println("TEST");
                 String response = serviceBD.getRestaurants().toJSONString();
-                System.out.println("MORT");
                 t.sendResponseHeaders(200, response.length());
                 OutputStream os = t.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
+
+                System.out.println("Proxy > Requete pour /restaurants terminee");
 
             } catch (IOException e){
                 e.printStackTrace();

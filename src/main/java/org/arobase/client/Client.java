@@ -3,6 +3,7 @@ package org.arobase.client;
 import org.arobase.Service;
 import org.arobase.bd.ServiceBD;
 import org.arobase.enseignements.ServiceEnseignementSup;
+import org.arobase.serveur.ServiceServeur;
 
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -16,7 +17,7 @@ public class Client implements Service {
     public void demarrer(String[] args) {
 
         if (args.length < 3) {
-            System.err.println("Usage: java Client <host> <port> <httpport>");
+            System.err.println("Usage: java -jar app-repartie Client <host> <port> <http_port>");
             System.exit(1);
         }
 
@@ -34,12 +35,15 @@ public class Client implements Service {
 
         try {
 
-            ServiceBD serviceBD = (ServiceBD) registry.lookup("baseDeDonnee");
-            ServiceEnseignementSup ensSup = (ServiceEnseignementSup) registry.lookup("enseignementSup");
+            ServiceServeur serviceServeur = (ServiceServeur) registry.lookup("serveur");
+
+            ServiceBD serviceBD = serviceServeur.getBD();
+            ServiceEnseignementSup ensSup = serviceServeur.getEnsSup();
 
             Proxy proxy = new Proxy(serviceBD, ensSup);
             proxy.createHttpServer(Integer.parseInt(args[2]));
-            System.out.println("Proxy lancé");
+
+            System.out.println("Proxy > Serveur HTTPS demarre sur " + args[2]);
 
         } catch (AccessException e) {
             throw new RuntimeException("Erreur d'accès à l'annuaire");

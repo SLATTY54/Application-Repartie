@@ -20,6 +20,8 @@ public class EnsSupHandler implements HttpHandler {
 
         new Thread(() -> {
 
+            System.out.println("Proxy > Requete pour /enseignements recue");
+
             try {
                 // Set CORS headers
                 Headers headers = t.getResponseHeaders();
@@ -34,6 +36,7 @@ public class EnsSupHandler implements HttpHandler {
                 OutputStream os = t.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
+                System.out.println("Proxy > Requete pour /enseignements terminee");
 
             } catch (IOException e) {
                 e.printStackTrace();
