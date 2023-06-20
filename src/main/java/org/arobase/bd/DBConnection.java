@@ -1,4 +1,4 @@
-package org.arobase.serveur;
+package org.arobase.bd;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static String serverName = "ssh.kizyow.fr";
+    private static String serverName = "webetu.iutnc.univ-lorraine.fr";
     private static String portNumber = "3306";
-    private static String dbName = "sae";
+    private static String dbName = "perrot54u";
     private static String username;
     private static String password;
     private static final String JDBC_URL = "jdbc:mysql://" + serverName + ":" + portNumber + "/" + dbName + "?autoReconnect=true";

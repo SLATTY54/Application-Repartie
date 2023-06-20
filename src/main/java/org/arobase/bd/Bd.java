@@ -1,4 +1,4 @@
-package org.arobase.serveur;
+package org.arobase.bd;
 
 import org.arobase.client.ReservationData;
 import org.arobase.client.RestoData;
@@ -13,6 +13,7 @@ public class Bd implements ServiceBD {
 
     @Override
     public JSONObject getRestaurants() throws RemoteException {
+        System.out.println("TEST BD 1");
         try {
             Connection connection = DBConnection.createSession();
 
@@ -21,6 +22,7 @@ public class Bd implements ServiceBD {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
+            System.out.println("TEST BD 2");
 
             List<JSONObject> list = new ArrayList<>();
 
@@ -87,11 +89,11 @@ public class Bd implements ServiceBD {
     }
 
     @Override
-    public boolean ajoutRestaurant(RestoData restoData) throws RemoteException {
+    public int ajoutRestaurant(RestoData restoData) throws RemoteException {
         try {
             Connection connection = DBConnection.createSession();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants(`name`, `nbPlace`, `address`, `latitude`, `longitude`) VALUES (?,?,?,?,?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Restaurants(`name`, `nbPlace`, `address`, `latitude`, `longitude`) VALUES (?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, restoData.getName());
             preparedStatement.setInt(2, restoData.getNbPlace());
             preparedStatement.setString(3, restoData.getAddress());
@@ -99,8 +101,15 @@ public class Bd implements ServiceBD {
             preparedStatement.setDouble(5, restoData.getLongitude());
             preparedStatement.executeUpdate();
 
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            int generatedId = -1;
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getInt(1);
+                System.out.println("Generated ID: " + generatedId);
+            }
+
             System.out.println("BDD > Ajout d'un nouveau restaurant");
-            return true;
+            return generatedId;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

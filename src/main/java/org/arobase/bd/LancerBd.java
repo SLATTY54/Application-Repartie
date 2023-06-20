@@ -1,22 +1,20 @@
-package org.arobase.client;
+package org.arobase.bd;
 
 import org.arobase.Service;
-import org.arobase.bd.ServiceBD;
-import org.arobase.enseignements.ServiceEnseignementSup;
 
 import java.rmi.AccessException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
-public class Client implements Service {
+public class LancerBd implements Service {
 
     @Override
     public void demarrer(String[] args) {
 
-        if (args.length < 3) {
-            System.err.println("Usage: java Client <host> <port> <httpport>");
+        if (args.length < 2) {
+            System.err.println("Usage: java LancerBd <host> <port>");
             System.exit(1);
         }
 
@@ -34,21 +32,18 @@ public class Client implements Service {
 
         try {
 
-            ServiceBD serviceBD = (ServiceBD) registry.lookup("baseDeDonnee");
-            ServiceEnseignementSup ensSup = (ServiceEnseignementSup) registry.lookup("enseignementSup");
+            DBConnection.initializeDatabase("perrot54u", "Alex54123*");
+            Bd bd = new Bd();
 
-            Proxy proxy = new Proxy(serviceBD, ensSup);
-            proxy.createHttpServer(Integer.parseInt(args[2]));
-            System.out.println("Proxy lancé");
+            ServiceBD rd = (ServiceBD) UnicastRemoteObject.exportObject(bd, 0);
+
+            registry.rebind("baseDeDonnee", rd);
 
         } catch (AccessException e) {
             throw new RuntimeException("Erreur d'accès à l'annuaire");
         } catch (RemoteException e) {
             throw new RuntimeException("Erreur de connexion à l'annuaire");
-        } catch (NotBoundException e) {
-            throw new RuntimeException("Le service n'est pas connu dans l'annuaire");
         }
-
 
     }
 

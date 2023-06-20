@@ -1,4 +1,4 @@
-package org.arobase.serveur;
+package org.arobase.bd;
 
 import org.arobase.client.ReservationData;
 import org.arobase.client.RestoData;
@@ -13,6 +13,6 @@ public interface ServiceBD extends Remote {
 
     public boolean reserver(ReservationData reservationData) throws RemoteException;
 
-    public boolean ajoutRestaurant(RestoData restoData) throws RemoteException;
+    public int ajoutRestaurant(RestoData restoData) throws RemoteException;
 
 }

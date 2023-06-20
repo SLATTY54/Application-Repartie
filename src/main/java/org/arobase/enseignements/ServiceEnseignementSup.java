@@ -1,4 +1,4 @@
-package org.arobase.serveur;
+package org.arobase.enseignements;
 
 import org.json.simple.JSONObject;
 

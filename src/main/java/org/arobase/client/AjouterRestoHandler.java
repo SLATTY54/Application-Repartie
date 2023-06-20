@@ -3,7 +3,7 @@ package org.arobase.client;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.arobase.serveur.ServiceBD;
+import org.arobase.bd.ServiceBD;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,54 +22,59 @@ public class AjouterRestoHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange t) {
 
+        new Thread(() -> {
 
-        /**
-         * FORMAT POUR LES DONNÉES
-         * {
-         *     "restaurant_id": 1,
-         *     "name": "PERROT",
-         *     "surname": "Alexandre",
-         *     "guests": 3,
-         *     "phoneNumber": "0625005194",
-         *     "reservationTime": "2023-06-17",
-         * }
-         */
+            /**
+             * FORMAT POUR LES DONNÉES
+             * {
+             *     "restaurant_id": 1,
+             *     "name": "PERROT",
+             *     "surname": "Alexandre",
+             *     "guests": 3,
+             *     "phoneNumber": "0625005194",
+             *     "reservationTime": "2023-06-17",
+             * }
+             */
 
-        try {
+            try {
 
-            Headers headers = t.getResponseHeaders();
-            headers.add("Access-Control-Allow-Origin", "*");
-            headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            headers.add("Content-Type", "application/json");
+                Headers headers = t.getResponseHeaders();
+                headers.add("Access-Control-Allow-Origin", "*");
+                headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                headers.add("Content-Type", "application/json");
 
-            if(!t.getRequestMethod().equals("POST")){
+                if (!t.getRequestMethod().equals("POST")) {
 
-                String response = "<h1>You must use this URL with a POST method!</h1>";
+                    String response = "<h1>You must use this URL with a POST method!</h1>";
+                    t.sendResponseHeaders(200, response.length());
+                    OutputStream os = t.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                    return;
+                }
+
+                InputStream is = t.getRequestBody();
+
+                JSONObject jsonObject = inputStreamToJSON(is);
+                RestoData restoData = RestoData.fromJSON(jsonObject);
+                System.out.println(restoData);
+
+                int id = serviceBD.ajoutRestaurant(restoData);
+                JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("restaurant_id", id);
+
+                String response = jsonObject1.toJSONString();
                 t.sendResponseHeaders(200, response.length());
                 OutputStream os = t.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
-                return;
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            InputStream is = t.getRequestBody();
-
-            JSONObject jsonObject = inputStreamToJSON(is);
-            RestoData restoData = RestoData.fromJSON(jsonObject);
-            System.out.println(restoData);
-
-            boolean value = serviceBD.ajoutRestaurant(restoData);
-
-            String response = String.valueOf(value);
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
 
     }
 
