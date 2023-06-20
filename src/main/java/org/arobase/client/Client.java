@@ -16,7 +16,7 @@ public class Client implements Service {
     public void demarrer(String[] args) {
 
         if (args.length < 2) {
-            System.err.println("Usage: java Client <host> <port>");
+            System.err.println("Usage: java Client <host> <port> <httpport>");
             System.exit(1);
         }
 
@@ -38,7 +38,7 @@ public class Client implements Service {
             ServiceEnseignementSup ensSup = (ServiceEnseignementSup) registry.lookup("enseignementSup");
 
             Proxy proxy = new Proxy(serviceBD, ensSup);
-            proxy.createHttpServer(80);
+            proxy.createHttpServer(Integer.parseInt(args[2]));
             System.out.println("Proxy lancé");
 
         } catch (AccessException e) {
