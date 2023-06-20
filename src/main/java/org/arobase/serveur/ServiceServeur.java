@@ -10,10 +10,16 @@ public interface ServiceServeur extends Remote {
 
     void enregistrerBD(ServiceBD serviceBD) throws RemoteException;
 
+    void supprimerBD() throws RemoteException;
+
     ServiceBD getBD() throws RemoteException;
 
     void enregisterEnsSup(ServiceEnseignementSup serviceEnseignementSup) throws RemoteException;
 
+    void supprimerEnsSup() throws RemoteException;
+
     ServiceEnseignementSup getEnsSup() throws RemoteException;
+
+    boolean isAlive() throws RemoteException;
 
 }

@@ -3,8 +3,7 @@ package org.arobase.client;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
-import org.arobase.bd.ServiceBD;
-import org.arobase.enseignements.ServiceEnseignementSup;
+import org.arobase.serveur.ServiceServeur;
 
 import javax.net.ssl.*;
 import java.io.FileInputStream;
@@ -15,12 +14,10 @@ import java.security.cert.CertificateException;
 
 public class Proxy {
 
-    private final ServiceBD serviceBD;
-    private final ServiceEnseignementSup ensSup;
+    private final ServiceServeur serviceServeur;
 
-    public Proxy(ServiceBD serviceBD, ServiceEnseignementSup ensSup) {
-        this.serviceBD = serviceBD;
-        this.ensSup = ensSup;
+    public Proxy(ServiceServeur serviceServeur) {
+        this.serviceServeur = serviceServeur;
     }
 
     public void createHttpServer(int port) {
@@ -65,10 +62,10 @@ public class Proxy {
                 }
             });
 
-            server.createContext("/restaurants", new RestaurantHandler(serviceBD));
-            server.createContext("/reservation", new ReservationHandler(serviceBD));
-            server.createContext("/enseignements", new EnsSupHandler(ensSup));
-            server.createContext("/ajouterResto", new AjouterRestoHandler(serviceBD));
+            server.createContext("/restaurants", new RestaurantHandler(serviceServeur));
+            server.createContext("/reservation", new ReservationHandler(serviceServeur));
+            server.createContext("/enseignements", new EnsSupHandler(serviceServeur));
+            server.createContext("/ajouterResto", new AjouterRestoHandler(serviceServeur));
             server.setExecutor(null);
             server.start();
 
@@ -76,7 +73,6 @@ public class Proxy {
                  KeyManagementException | UnrecoverableKeyException e) {
             throw new RuntimeException(e);
         }
-
 
     }
 

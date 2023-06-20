@@ -4,19 +4,22 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.arobase.bd.ServiceBD;
+import org.arobase.serveur.ServiceServeur;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 
 public class AjouterRestoHandler implements HttpHandler {
 
-    private final ServiceBD serviceBD;
+    private final ServiceServeur serviceServeur;
 
-    public AjouterRestoHandler(ServiceBD serviceBD) {
-        this.serviceBD = serviceBD;
+    public AjouterRestoHandler(ServiceServeur serviceServeur) {
+        this.serviceServeur = serviceServeur;
     }
 
     @Override
@@ -63,7 +66,16 @@ public class AjouterRestoHandler implements HttpHandler {
                 RestoData restoData = RestoData.fromJSON(jsonObject);
                 System.out.println(restoData);
 
-                int id = serviceBD.ajoutRestaurant(restoData);
+                ServiceBD serviceBD = serviceServeur.getBD();
+
+                int id = -1;
+
+                if (serviceBD == null) {
+                    System.out.println("Proxy > Requete pour /ajouterResto annulee, service BD non disponible, valeur par defaut retournee");
+                } else {
+                    id = serviceBD.ajoutRestaurant(restoData);
+                }
+
                 JSONObject jsonObject1 = new JSONObject();
                 jsonObject1.put("restaurant_id", id);
 
@@ -74,8 +86,24 @@ public class AjouterRestoHandler implements HttpHandler {
                 os.close();
                 System.out.println("Proxy > Requete pour /ajouterResto recue");
 
+            } catch (ConnectException e) {
+
+                try {
+                    System.out.println("Proxy > Requete pour /ajouterResto annulee, service non disponible");
+                    serviceServeur.supprimerBD();
+                } catch (RemoteException ex) {
+                    try {
+                        System.out.println("Proxy > Erreur lors de la suppression du service BD");
+                        serviceServeur.isAlive();
+                    } catch (RemoteException exc) {
+                        System.out.println("Proxy > Le serveur est hors ligne, arret du client");
+                        System.exit(1);
+                    }
+
+                }
+
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
 
         }).start();

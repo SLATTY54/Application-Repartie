@@ -4,15 +4,18 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.arobase.enseignements.ServiceEnseignementSup;
+import org.arobase.serveur.ServiceServeur;
 
 import java.io.*;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 
 public class EnsSupHandler implements HttpHandler {
 
-    private final ServiceEnseignementSup serviceEnseignementSup;
+    private final ServiceServeur serviceServeur;
 
-    public EnsSupHandler(ServiceEnseignementSup serviceEnseignementSup) {
-        this.serviceEnseignementSup = serviceEnseignementSup;
+    public EnsSupHandler(ServiceServeur serviceServeur) {
+        this.serviceServeur = serviceServeur;
     }
 
     @Override
@@ -30,6 +33,13 @@ public class EnsSupHandler implements HttpHandler {
                 headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 headers.add("Content-Type", "application/json");
 
+                ServiceEnseignementSup serviceEnseignementSup = serviceServeur.getEnsSup();
+
+                if (serviceEnseignementSup == null) {
+                    System.out.println("Proxy > Requete pour /enseignements annulee, service EnsSup non disponible");
+                    return;
+                }
+
                 String response = serviceEnseignementSup.getEnseignementsSup();
 
                 t.sendResponseHeaders(200, response.length());
@@ -38,8 +48,24 @@ public class EnsSupHandler implements HttpHandler {
                 os.close();
                 System.out.println("Proxy > Requete pour /enseignements terminee");
 
+            } catch (ConnectException e) {
+
+                try {
+                    System.out.println("Proxy > Requete pour /enseignements annulee, service non disponible");
+                    serviceServeur.supprimerEnsSup();
+                } catch (RemoteException ex) {
+                    try {
+                        System.out.println("Proxy > Erreur lors de la suppression du service EnsSup");
+                        serviceServeur.isAlive();
+                    } catch (RemoteException exc) {
+                        System.out.println("Proxy > Le serveur est hors ligne, arret du client");
+                        System.exit(1);
+                    }
+
+                }
+
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
 
         }).start();

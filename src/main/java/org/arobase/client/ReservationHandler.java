@@ -4,19 +4,22 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.arobase.bd.ServiceBD;
+import org.arobase.serveur.ServiceServeur;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 
 public class ReservationHandler implements HttpHandler {
 
-    private final ServiceBD serviceBD;
+    private final ServiceServeur serviceServeur;
 
-    public ReservationHandler(ServiceBD serviceBD) {
-        this.serviceBD = serviceBD;
+    public ReservationHandler(ServiceServeur serviceServeur) {
+        this.serviceServeur = serviceServeur;
     }
 
     @Override
@@ -62,12 +65,18 @@ public class ReservationHandler implements HttpHandler {
                 InputStream is = t.getRequestBody();
 
                 JSONObject jsonObject = inputStreamToJSON(is);
-                System.out.println(jsonObject.toJSONString());
                 ReservationData reservationData = ReservationData.fromJSON(jsonObject);
-                System.out.println(reservationData);
 
+                boolean value = false;
 
-                boolean value = serviceBD.reserver(reservationData);
+                ServiceBD serviceBD = serviceServeur.getBD();
+
+                if (serviceBD == null) {
+                    System.out.println("Proxy > Requete pour /reservation annulee, service BD non disponible, valeur par defaut retournee");
+                } else {
+                    value = serviceBD.reserver(reservationData);
+                }
+
                 JSONObject jsonObject1 = new JSONObject();
                 jsonObject1.put("status", value);
 
@@ -78,9 +87,24 @@ public class ReservationHandler implements HttpHandler {
                 os.close();
                 System.out.println("Proxy > Requete pour /reservation terminee");
 
-            } catch (
-                    IOException e) {
-                e.printStackTrace();
+            } catch (ConnectException e) {
+
+                try {
+                    System.out.println("Proxy > Requete pour /reservation annulee, service non disponible");
+                    serviceServeur.supprimerBD();
+                } catch (RemoteException ex) {
+                    try {
+                        System.out.println("Proxy > Erreur lors de la suppression du service BD");
+                        serviceServeur.isAlive();
+                    } catch (RemoteException exc) {
+                        System.out.println("Proxy > Le serveur est hors ligne, arret du client");
+                        System.exit(1);
+                    }
+
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
         }).start();

@@ -37,10 +37,7 @@ public class Client implements Service {
 
             ServiceServeur serviceServeur = (ServiceServeur) registry.lookup("serveur");
 
-            ServiceBD serviceBD = serviceServeur.getBD();
-            ServiceEnseignementSup ensSup = serviceServeur.getEnsSup();
-
-            Proxy proxy = new Proxy(serviceBD, ensSup);
+            Proxy proxy = new Proxy(serviceServeur);
             proxy.createHttpServer(Integer.parseInt(args[2]));
 
             System.out.println("Proxy > Serveur HTTPS demarre sur " + args[2]);
@@ -52,7 +49,6 @@ public class Client implements Service {
         } catch (NotBoundException e) {
             throw new RuntimeException("Le service n'est pas connu dans l'annuaire");
         }
-
 
     }
 
