@@ -16,7 +16,7 @@ public class LancerEnsSup implements Service {
     public void demarrer(String[] args) {
 
         if (args.length < 2) {
-            System.err.println("Usage: java LancerEnsSup <host> <port>");
+            System.err.println("Usage: java -jar app-repartie service-enssup <host> <port>");
             System.exit(1);
         }
 

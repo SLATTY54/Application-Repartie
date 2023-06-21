@@ -15,7 +15,7 @@ public class LancerProxy implements Service {
     public void demarrer(String[] args) {
 
         if (args.length < 3) {
-            System.err.println("Usage: java -jar app-repartie Client <host> <port> <http_port>");
+            System.err.println("Usage: java -jar app-repartie proxy <host> <port> <http_port>");
             System.exit(1);
         }
 

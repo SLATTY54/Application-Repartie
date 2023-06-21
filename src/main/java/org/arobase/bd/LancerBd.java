@@ -16,7 +16,7 @@ public class LancerBd implements Service {
     public void demarrer(String[] args) {
 
         if (args.length < 2) {
-            System.err.println("Usage: java LancerBd <host> <port>");
+            System.err.println("Usage: java -jar app-repartie service-bd <host> <port>");
             System.exit(1);
         }
 
