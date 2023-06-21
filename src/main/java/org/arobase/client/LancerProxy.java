@@ -1,8 +1,6 @@
 package org.arobase.client;
 
 import org.arobase.Service;
-import org.arobase.bd.ServiceBD;
-import org.arobase.enseignements.ServiceEnseignementSup;
 import org.arobase.serveur.ServiceServeur;
 
 import java.rmi.AccessException;
@@ -11,7 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Client implements Service {
+public class LancerProxy implements Service {
 
     @Override
     public void demarrer(String[] args) {

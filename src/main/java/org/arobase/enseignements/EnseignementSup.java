@@ -26,8 +26,6 @@ public class EnseignementSup implements ServiceEnseignementSup {
 
             if (statusCode == 200) {
                 String responseBody = response.body();
-                // Process the response data as needed
-                System.out.println(responseBody);
             } else {
                 System.out.println("Request failed with status code: " + statusCode);
             }
